@@ -6,9 +6,11 @@ from tkinter import *
 import time
 import math
 
+START_IMAGE_NUM = 71
 x_offset = 0
 y_offset = 0
 scale_factor = 0
+rotation = 0
 next_image = False
 unhandled_key_press = False
 
@@ -17,6 +19,7 @@ def onKeyPress(event):
     global y_offset
     global scale_factor
     global next_image
+    global rotation
 
     if event.char == 'w':
         y_offset -= 10 # Up
@@ -35,13 +38,22 @@ def onKeyPress(event):
     elif event.char == 'l':
         x_offset += 100 # Hmm, Quite Right
     elif event.char == 'e':
-        scale_factor += 5 # In
+        scale_factor += 1 # In
     elif event.char == 'q':
-        scale_factor -= 5 # Out
+        scale_factor -= 1 # Out
+    elif event.char == 'o':
+        scale_factor += 5 # Quite In
+    elif event.char == 'u':
+        scale_factor -= 5 # Quite Out
+    elif event.char == 'r':
+        rotation += 90 
+        if rotation >= 360:
+            rotation = 0
     elif event.char == ' ':
         next_image = True 
 
-    scale_factor = max(scale_factor,10)
+    # Enforce minimum scale factor
+    scale_factor = max(scale_factor, 10)
 
 def main():
     window_dimensions = (1280,720)
@@ -57,22 +69,24 @@ def main():
     window.bind('<KeyPress>', onKeyPress)
 
     # Ask the user to select images
-    image_paths = filedialog.askopenfilenames(title='Select images to align')
+    image_paths = filedialog.askopenfilenames(title='Select images to align...')
 
     # Super primative error checking
     if len(image_paths) < 2:
         exit("Error: Select at least two images")
     for path in image_paths:
-        if path[-4:] != ".jpg":
+        if (path[-4:] != ".jpg") & (path[-4:] != ".JPG"):
+            print(path)
             exit("Error: Only .jpg is supported. Sorry :(")
 
     # Ask the user for a destination directory
-    output_folder = filedialog.askdirectory(title='Select output folder')
+    output_folder = filedialog.askdirectory(title='Select output folder...')
 
     # I don't know how variable context works in python...
     global x_offset
     global y_offset
     global scale_factor
+    global rotation
     global next_image
     global unhandled_key_press
 
@@ -83,7 +97,7 @@ def main():
             img1 = PIL.Image.open(image_paths[image_num]).convert("RGBA")
         else:
             # Otherwise pull the last image we made
-            img1 = PIL.Image.open(output_folder+"/"+str(image_num)+".png")
+            img1 = PIL.Image.open(output_folder+"/"+str(image_num + START_IMAGE_NUM)+".png")
         # Open the image to rescale
         img2 = PIL.Image.open(image_paths[image_num+1]).convert("RGBA")
 
@@ -91,6 +105,7 @@ def main():
         x_offset = 0
         y_offset = 0
         scale_factor = 100
+        rotation = 0
         next_image = False
 
         # While loop to line up the images
@@ -106,6 +121,10 @@ def main():
             width = math.floor(width * (scale_factor / 100))
             height = math.floor(height * (scale_factor / 100))
             temp_img2 = temp_img2.resize((width,height))
+            
+            # Rotate
+            temp_img2 = temp_img2.rotate(rotation)
+
             # Create transparency (65%)
             paste_mask = temp_img2.split()[3].point(lambda i: i * 65 / 100.)
             # Paste the transparent image
@@ -121,28 +140,25 @@ def main():
         # Open a fresh backdrop
         backdrop = PIL.Image.open("backdrop.jpg").convert("RGBA")
 
-        print("Scale factor: "+str(scale_factor) +" x_off: "+str(x_offset) + " y_off: "+str(y_offset))
+        print("Img #" + str(image_num) + ": Scale factor: "+str(scale_factor) +" x_off: "+str(x_offset) + " y_off: "+str(y_offset) + " rotation: " + str(rotation))
 
-        print("AFTER: Scale factor: "+str(scale_factor) +" x_off: "+str(x_offset) + " y_off: "+str(y_offset))
-
+        # Scale 
         width, height = img2.size
         width = math.floor(width * (scale_factor / 100)) * 3
         height = math.floor(height * (scale_factor / 100)) * 3
         img2 = img2.resize((width,height))
+
+        # Rotate
+        img2 = img2.rotate(rotation)
+
         # Paste the current image on the backdrop with the chosen offset
         backdrop.paste( img2, (x_offset*3, y_offset*3), mask=img2) # ( 0, 0), mask=img2)
         #save the output image
-        out_file = output_folder+"/"+str(image_num+1)+".png"
+        out_file = output_folder+"/"+str(image_num + 1 + START_IMAGE_NUM)+".png"
         backdrop.save(out_file,format = "png")
 
+    # Once we break out of the image path loop we're done
     exit()
-
-    disp_img = ImageTk.PhotoImage(img1)
-    panel = tk.Label(window, image = disp_img)
-    panel.pack(side = "top", fill = "both", expand = "yes")
-    window.mainloop()
-
-    
 
 if __name__ == "__main__":
     main()
