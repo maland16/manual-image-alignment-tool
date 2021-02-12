@@ -6,7 +6,8 @@ from tkinter import *
 import time
 import math
 
-START_IMAGE_NUM = 71
+# This is the number of the first output photo
+START_IMAGE_NUM = 114
 x_offset = 0
 y_offset = 0
 scale_factor = 0
@@ -14,6 +15,7 @@ rotation = 0
 next_image = False
 unhandled_key_press = False
 
+# This function gets called when, you guessed it, a key is pressed
 def onKeyPress(event):
     global x_offset
     global y_offset
@@ -56,9 +58,8 @@ def onKeyPress(event):
     scale_factor = max(scale_factor, 10)
 
 def main():
-    window_dimensions = (1280,720)
-    
     # Set up the TKinter window
+    window_dimensions = (1280,720)
     window = tk.Tk()
     window.title("Manual Image Alignment Tool")
     # I don't like this next line of code very much...
@@ -108,7 +109,9 @@ def main():
         rotation = 0
         next_image = False
 
-        # While loop to line up the images
+        # While loop to line up the images. This loop just keeps printing the pictures with 
+        # the set parameters while the user modifies the parameters using the keyboard 
+        # (see onKeyPress above). The loop breaks when the user presses the keyboard
         while(not next_image):
             # copy the background image so we can do transparency
             temp_img1 = img1.copy()
@@ -129,7 +132,7 @@ def main():
             paste_mask = temp_img2.split()[3].point(lambda i: i * 65 / 100.)
             # Paste the transparent image
             temp_img1.paste(temp_img2,(x_offset,y_offset),mask=paste_mask)
-
+            # This magic prints the image to the window
             tk_image = ImageTk.PhotoImage(temp_img1)
             panel = tk.Label(window, image = tk_image)
             panel.pack(side = "top", fill = "both", expand = "yes")
@@ -139,8 +142,8 @@ def main():
         # Save the adjusted image
         # Open a fresh backdrop
         backdrop = PIL.Image.open("backdrop.jpg").convert("RGBA")
-
-        print("Img #" + str(image_num) + ": Scale factor: "+str(scale_factor) +" x_off: "+str(x_offset) + " y_off: "+str(y_offset) + " rotation: " + str(rotation))
+        # Debug info (image parameters)
+        print("Img #" + str(image_num + 1 + START_IMAGE_NUM) + ": Scale factor: "+str(scale_factor) +" x_off: "+str(x_offset) + " y_off: "+str(y_offset) + " rotation: " + str(rotation))
 
         # Scale 
         width, height = img2.size
