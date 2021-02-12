@@ -1,7 +1,8 @@
 # Manual Image Alignment Tool
 Easily resize/align/rotate muliple images to a standard 4K video resolution
 ## Why?
-I built this program to allow me to easily create a timelapse video from a bunch (~300) of photos of my car I had taken over 2 years: 
+I built this program to allow me to easily create a timelapse video from a bunch (~300) of photos of my car I had taken over 2 years:   
+
 [![Das Video](https://img.youtube.com/vi/1gZ3UAODakE/0.jpg)](https://www.youtube.com/watch?v=1gZ3UAODakE)
 
 I was looking for a program that allowed me to overlay one translucent photo over another, align them, and export the aligned photo easily. I couldn't find a free program to do that, so I created this one.
@@ -24,6 +25,7 @@ The program will load up the seed photo and overlay the first frame you'd like t
 * For fine scaling, use Q & E (out & in repsectively)  
 * For course scaling, use U & O  
 * To rotate, use R  
+
 When you're done aligning the photo, use SPACE to save the aligned photo and load the next.  
 That's it! When the program is out of photos, it will exit. The program saves the photo as soon as you move on to the next, so if you have to quit early or the program crashes your progress is (kinda) saved.
 ## Known Issues
