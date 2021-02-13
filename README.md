@@ -7,10 +7,10 @@ I built this program to allow me to easily create a timelapse video from a bunch
 
 I was looking for a program that allowed me to overlay one translucent photo over another, align them, and export the aligned photo easily. I couldn't find a free program to do that, so I created this one.
 ## Disclaimer
-I am an embedded firmware developer by trade, so python is really not my strong suit. This program is incredibly barebones, and probably would make a real python dev cry.
-## What this program does
-This program allows you to select a bunch of images (.jpg's only), align them one by one using the keyboard, and export them as 4K resolution frames (.png's only). 
-## What this program does not do
+I am an embedded firmware developer by trade, so python is really not my strong suit. This script is incredibly barebones, and probably would make a real python dev cry.
+## What this script does
+This script allows you to select a bunch of images (.jpg's only), align them one by one using the keyboard, and export them as 4K resolution frames (.png's only). 
+## What this script does not do
 Literally anything else.
 ## How to use
 Set START_IMAGE_NUM to the file name of the first output image you'd like: {START_IMAGE_NUM}.jpg  
